@@ -28,14 +28,23 @@ class Order extends Model
         'order_date' => 'date'
     ];
 
+    public function addProductWithQuantity($product, $quantity)
+    {
+        (array) $this->products_with_quantity [] = [
+            'product_id' => $product->getKey,
+            'quantity' => $quantity
+        ];
+
+    }
+
     public function customer()
     {
-        $this->belongsTo(User::class, 'customer_id', 'customer_id');
+        return $this->belongsTo(User::class, 'customer_id', 'customer_id');
     }
 
     public function shipment()
     {
-        $this->belongsTo(Shipment::class, 'order_id', 'order_id');
+        return $this->belongsTo(Shipment::class, 'order_id', 'order_id');
     }
 
 }
