@@ -17,9 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [\App\Http\Controllers\MainPageController::class, 'mainPage']);
 
 Route::middleware(['auth', 'role:administrator'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->middleware(['auth'])->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\ShipmentController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
     Route::resource('products', \App\Http\Controllers\ProductController::class)
         ->middleware(['auth'])
@@ -37,9 +35,11 @@ Route::middleware(['auth', 'role:administrator'])->group(function () {
         ->middleware(['auth'])
         ->except(['store', 'create']);
 
+
+
 });
 
-Route::get('/userorders', [\App\Http\Controllers\OrderController::class, 'index'])->middleware(['auth'])->name('dashboard');
+Route::get('/userorders', [\App\Http\Controllers\OrderController::class, 'index'])->middleware(['auth'])->name('userorders');
 
 
 //Route::get('/product', [\App\Http\Controllers\ProductController::class, 'index'])->middleware(['auth'])->name('product');

@@ -13,7 +13,7 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Vezérlőpult') }}
+                        {{ __('Kiszállítások') }}
                     </x-nav-link>
                 </div>
 
@@ -38,6 +38,11 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')">
                         {{ __('Rendelések') }}
+                    </x-nav-link>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('userorders')" :active="request()->routeIs('userorders')">
+                        {{ __('Saját Rendelések') }}
                     </x-nav-link>
                 </div>
 
