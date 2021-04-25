@@ -13,30 +13,34 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::get('/', [\App\Http\Controllers\MainPageController::class, 'mainPage']);
+
+Route::middleware(['auth', 'role:administrator'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->middleware(['auth'])->name('dashboard');
+
+    Route::resource('products', \App\Http\Controllers\ProductController::class)
+        ->middleware(['auth'])
+        ->except('show');
+
+    Route::resource('categories', \App\Http\Controllers\CategoryController::class)
+        ->middleware(['auth'])
+        ->except('show');
+
+    Route::resource('users', \App\Http\Controllers\UserController::class)
+        ->middleware(['auth'])
+        ->except(['show', 'store', 'create']);
+
+    Route::resource('orders', \App\Http\Controllers\AdminOrderController::class)
+        ->middleware(['auth'])
+        ->except(['store', 'create']);
+
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::get('/userorders', [\App\Http\Controllers\OrderController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
-
-Route::resource('products', \App\Http\Controllers\ProductController::class)
-    ->middleware(['auth'])
-    ->except('show');
-
-Route::resource('categories', \App\Http\Controllers\CategoryController::class)
-    ->middleware(['auth'])
-    ->except('show');
-
-Route::resource('users', \App\Http\Controllers\UserController::class)
-    ->middleware(['auth'])
-    ->except(['show', 'store', 'create']);
-
-Route::resource('orders', \App\Http\Controllers\AdminOrderController::class)
-    ->middleware(['auth'])
-    ->except(['store', 'create']);
 
 //Route::get('/product', [\App\Http\Controllers\ProductController::class, 'index'])->middleware(['auth'])->name('product');
 

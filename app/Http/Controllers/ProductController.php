@@ -38,7 +38,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $attributes = $this->attributesArrayFromFormString($request->attributes);
+        $attributes = $this->attributesArrayFromFormString($request->get('attributes'));
         $request->merge(['attributes' => $attributes]);
         $product = new Product($request->all());
         $product->save();
