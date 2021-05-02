@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     @foreach($orders as $key => $orderGroup)
-                        @if($orderGroup->isNotEmpty())
+                        @if(!empty($orderGroup))
                             <table class="border-separate border border-black ...">
                                 <thead>
                                 <tr>
@@ -25,14 +25,15 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+
                                 @foreach($orderGroup as $order)
                                     <h1>{{$key}}</h1>
                                     <tr>
-                                        <td class="border border-black ...">{{$order->customer->name}}</td>
-                                        <td class="border border-black ...">{{date_format($order->order_date, 'Y-M-d')}}</td>
+                                        <td class="border border-black ...">{{$order->customer_name}}</td>
+                                        <td class="border border-black ...">{{$order->order_date}}</td>
                                         <td class="border border-black ...">
-                                            @if(!is_null($order->products_with_quantity))
-                                                @foreach ($order->products_with_quantity as $product)
+                                            @if(!is_null((array)json_decode($order->products_with_quantity)))
+                                                @foreach ((array)json_decode($order->products_with_quantity) as $product)
                                                     @foreach($product as $key => $value)
                                                         <ul>
                                                             <li><strong>{{$key}}: </strong>{{$value}}</li>
@@ -42,15 +43,15 @@
                                             @endif
                                         </td>
                                         <td class="border border-black ...">{{$order->state}}</td>
-                                        <td class="border border-black ...">@if(!is_null($order->shipment)) {{$order->shipment->shipment_date}} @endif</td>
+                                        <td class="border border-black ...">{{$order->shipment_date}}</td>
                                         <td class="border border-black ..."><a
-                                                href="{{route('orders.show', $order->getKey())}}">{{__('Rendelés áttekintése')}}</a>
+                                                href="{{route('orders.show', $order->order_id)}}">{{__('Rendelés áttekintése')}}</a>
                                         </td>
                                         <td class="border border-black ..."><a
-                                                href="{{route('orders.edit', $order->getKey())}}">{{__('Szerkesztés')}}</a>
+                                                href="{{route('orders.edit', $order->order_id)}}">{{__('Szerkesztés')}}</a>
                                         </td>
                                         <td class="border border-black ...">
-                                            <form action="{{route('orders.destroy', $order->getKey())}}" method="POST">
+                                            <form action="{{route('orders.destroy', $order->order_id)}}" method="POST">
                                                 @method('DELETE')
                                                 @csrf
                                                 <button type="submit">{{__('Törlés')}}</button>

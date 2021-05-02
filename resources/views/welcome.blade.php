@@ -8,74 +8,58 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
 </head>
 <body class="antialiased">
 <div
-    class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
+    class="float-right">
     @if (Route::has('login'))
         <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
             @auth
-                <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 underline">Dashboard</a>
+                <a href="{{ url('/dashboard') }}" class="btn btn-blue">Dashboard</a>
             @else
-                <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
+                <a href="{{ route('login') }}" class="btn btn-blue">Log in</a>
 
                 @if (Route::has('register'))
-                    <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>
+                    <a href="{{ route('register') }}" class="btn btn-blue">Register</a>
                 @endif
             @endauth
         </div>
     @endif
 </div>
-
-
-@foreach($recommendedProducts as $category)
-        @if($category->products->isNotEmpty())
-            <table class="border-separate border border-black ...">
-                <thead>
-                <tr>
-                    <th class="border border-black ...">{{__('Név')}}</th>
-                    <th class="border border-black ...">{{__('Ár')}}</th>
-                    <th class="border border-black ...">{{__('Leírás')}}</th>
-                    <th class="border border-black ...">{{__('Jellemzők')}}</th>
-                    <th class="border border-black ...">{{__('Kategória')}}</th>
-                    <th class="border border-black ...">{{__('Szerkesztés')}}</th>
-                    <th class="border border-black ...">{{__('Törlés')}}</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($category->products as $product)
+<h1>Ajánlott, új termékek (5db kategóriánként)</h1>
+<table class="table col-10">
+    <thead>
+    <tr>
+        <th class="border border-black ...">{{__('Név')}}</th>
+        <th class="border border-black ...">{{__('Ár')}}</th>
+        <th class="border border-black ...">{{__('Leírás')}}</th>
+        <th class="border border-black ...">{{__('Jellemzők')}}</th>
+        <th class="border border-black ...">{{__('Kategória')}}</th>
+    </tr>
+    </thead>
+     <tbody>
+                @foreach($recommendedProducts as $product)
                     <tr>
                         <td class="border border-black ...">{{$product->name}}</td>
                         <td class="border border-black ...">{{$product->price}}</td>
                         <td class="border border-black ...">{{$product->description}}</td>
                         <td class="border border-black ...">
-                            @if(!is_null($product->attributes))
-                                @foreach ($product->attributes as $key => $value)
+                            @if(!is_null((array)json_decode($product->attributes)))
+                                @foreach ((array)json_decode($product->attributes) as $key => $value)
                                     <ul>
                                         <li><strong>{{$key}}: </strong>{{$value}}</li>
                                     </ul>
                                 @endforeach
                             @endif
                         </td>
-                        <td class="border border-black ...">{{$product->category->name}}</td>
-                        <td class="border border-black ..."><a
-                                href="{{route('products.edit', $product->getKey())}}">{{__('Szerkesztés')}}</a></td>
-                        <td class="border border-black ...">
-                            <form action="{{route('products.destroy', $product->getKey())}}" method="POST">
-                                @method('DELETE')
-                                @csrf
-                                <button type="submit">{{__('Törlés')}}</button>
-                            </form>
-                        </td>
+                        <td class="border border-black ...">{{$product->category_name}}</td>
                     </tr>
 
                 @endforeach
                 </tbody>
             </table>
-        @endif
-
-    @endforeach
 
 </body>
 </html>

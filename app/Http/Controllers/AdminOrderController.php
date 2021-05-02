@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Shipment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminOrderController extends Controller
 {
@@ -16,9 +17,26 @@ class AdminOrderController extends Controller
      */
     public function index()
     {
-        $orders ['pending'] = Order::query()->with(['customer', 'shipment'])->where('state', '=', 'not paid')->get();
-        $orders ['paid'] = Order::query()->with(['customer', 'shipment'])->where('state', '=', 'paid')->get();
-        $orders ['delivered'] = Order::query()->with(['customer', 'shipment'])->where('state', '=', 'delivered')->get();
+        $orders ['pending'] = DB::select("
+select orders.*, users.name as customer_name, shipments.shipment_date from (
+orders inner join users on orders.customer_id = users.customer_id
+left join shipments on orders.order_id = shipments.order_id
+
+)where state = 'not paid'");
+
+
+        $orders ['paid'] = DB::select("
+select orders.*, users.name as customer_name, shipments.shipment_date from (
+orders inner join users on orders.customer_id = users.customer_id
+left join shipments on orders.order_id = shipments.order_id
+
+)where state = 'paid'");
+        $orders ['delivered'] = DB::select("
+select orders.*, users.name as customer_name, shipments.shipment_date from (
+orders inner join users on orders.customer_id = users.customer_id
+left join shipments on orders.order_id = shipments.order_id
+
+)where state = 'delivered'");
 
         return view('admin_order.admin_order', ['orders' => $orders]);
     }
