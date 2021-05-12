@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\Shipment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -17,6 +21,17 @@ class ProductController extends Controller
     {
         $products = Product::with('category')->get();
         return view('product.product', ['products' => $products]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function buyIndex()
+    {
+        $products = Product::with('category')->get();
+        return view('product.buy_product', ['products' => $products]);
     }
 
     /**
@@ -107,6 +122,48 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect(route('products.index'));
+    }
+
+    public function buy(Request $request)
+    {
+        $productsWithQuantity = [];
+        $productPrices = Product::query()
+            ->whereIn('product_id', array_keys($request->get('quantity')))
+            ->pluck('price', 'product_id');
+        $totalPrice = 0;
+
+        foreach (array_filter($request->get('quantity')) as $productId => $quantity)
+        {
+            $productsWithQuantity [] = [
+                'product_id' => $productId,
+                'quantity' => $quantity
+            ];
+
+            $totalPrice += ($productPrices[$productId] * $quantity);
+        }
+
+        $user = $request->user();
+        $userBalance = $user->balance;
+
+        if ($totalPrice > $userBalance) {
+            return 'TÚL ALACSONY EGYENLEG';
+        }
+
+        $order = new Order([
+            'customer_id' => $user->getKey(),
+            'order_date' => Carbon::today(),
+            'products_with_quantity' => $productsWithQuantity,
+            'state' => 'not paid'
+        ]);
+
+        $order->save();
+
+        $user->balance = $userBalance - $totalPrice;
+        $user->save();
+
+
+        return redirect(route('userorders'));
+
     }
 
     /**

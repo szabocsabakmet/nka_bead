@@ -16,6 +16,14 @@ class DefaultUsersSeeder extends Seeder
      */
     public function run()
     {
+
+        $userRole = new Role([
+            'name' => 'user'
+        ]);
+
+        $userRole->save();
+
+
         $admin = new User([
             'name' => 'Administrator',
             'email' => 'admin@nka-shop.com',
@@ -38,14 +46,6 @@ class DefaultUsersSeeder extends Seeder
         ]);
 
         $user->save();
-
-        $userRole = new Role([
-            'name' => 'user'
-        ]);
-
-        $userRole->save();
-
-        $user->assignRole($userRole);
 
     }
 }

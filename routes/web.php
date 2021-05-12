@@ -19,10 +19,6 @@ Route::get('/', [\App\Http\Controllers\MainPageController::class, 'mainPage']);
 Route::middleware(['auth', 'role:administrator'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\ShipmentController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
-    Route::resource('products', \App\Http\Controllers\ProductController::class)
-        ->middleware(['auth'])
-        ->except('show');
-
     Route::resource('categories', \App\Http\Controllers\CategoryController::class)
         ->middleware(['auth'])
         ->except('show');
@@ -40,6 +36,13 @@ Route::middleware(['auth', 'role:administrator'])->group(function () {
 });
 
 Route::get('/userorders', [\App\Http\Controllers\OrderController::class, 'index'])->middleware(['auth'])->name('userorders');
+Route::get('/userorders/{id}', [\App\Http\Controllers\OrderController::class, 'show'])->middleware(['auth'])->name('userorders_show');
+Route::resource('products', \App\Http\Controllers\ProductController::class)
+    ->middleware(['auth'])
+    ->except('show');
+
+Route::get('/buy', [\App\Http\Controllers\ProductController::class, 'buyIndex'])->middleware(['auth'])->name('buy_index');
+Route::post('/buy', [\App\Http\Controllers\ProductController::class, 'buy'])->middleware(['auth'])->name('buy');
 
 
 //Route::get('/product', [\App\Http\Controllers\ProductController::class, 'index'])->middleware(['auth'])->name('product');

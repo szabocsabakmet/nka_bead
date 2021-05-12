@@ -22,7 +22,7 @@ class OrderController extends Controller
 
     public function show($id)
     {
-        $order = Order::query()->with(['customer', 'shipment'])->first();
+        $order = Order::query()->with(['customer', 'shipment'])->where('order_id', '=', $id)->first();
         $productIds = [];
         $quantities = [];
 

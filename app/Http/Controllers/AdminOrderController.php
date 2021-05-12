@@ -43,7 +43,7 @@ left join shipments on orders.order_id = shipments.order_id
 
     public function show($id)
     {
-        $order = Order::query()->with(['customer', 'shipment'])->first();
+        $order = Order::query()->with(['customer', 'shipment'])->where('order_id', '=', $id)->first();
         $productIds = [];
         $quantities = [];
 

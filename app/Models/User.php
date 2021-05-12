@@ -45,6 +45,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            /**
+             * @var $user User
+             */
+            $user->assignRole('user');
+        });
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class, 'customer_id', 'customer_id');

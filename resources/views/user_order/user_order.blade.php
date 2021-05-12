@@ -42,7 +42,7 @@
                                 <td class="border border-black ...">{{$order->state}}</td>
                                 <td class="border border-black ...">@if(!is_null($order->shipment)) {{$order->shipment->shipment_date}} @endif</td>
                                 <td class="border border-black ..."><a
-                                        href="{{route('orders.show', $order->getKey())}}">{{__('Rendelés áttekintése')}}</a>
+                                        href="{{route('userorders_show', $order->getKey())}}">{{__('Rendelés áttekintése')}}</a>
                                 </td>
                                 <td class="border border-black ..."><a
                                         href="{{route('orders.edit', $order->getKey())}}">{{__('Szerkesztés')}}</a>
